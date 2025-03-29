@@ -7,9 +7,9 @@ function Signup() {
     email: '',
     password: '',
     confirmPassword: '',
-    fullname: '',
   });
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const signupModalRef = useRef(null);
 
   const handleSignupChange = (e) => {
@@ -18,29 +18,34 @@ function Signup() {
   };
 
   const validatePassword = (password) => {
-    return password.length >= 6 && /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return password.length >= 8;
   };
 
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
 
-    // Validate passwords match
     if (signupForm.password !== signupForm.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    // Validate password strength
     if (!validatePassword(signupForm.password)) {
-      setError('Password must be at least 6 characters long and include a special character.');
+      setError('Password must be at least 8 characters long');
       return;
     }
 
+    setIsLoading(true);
     try {
       const response = await fetch('http://localhost:8000/api/register/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signupForm),
+        body: JSON.stringify({
+          username: signupForm.username,
+          email: signupForm.email,
+          password: signupForm.password,
+          confirmPassword: signupForm.confirmPassword
+        }),
       });
 
       const data = await response.json();
@@ -48,13 +53,14 @@ function Signup() {
       if (response.ok) {
         alert('Registration successful! Please log in.');
         setIsSignupVisible(false);
-        setSignupForm({ username: '', email: '', password: '', confirmPassword: '', fullname: '' });
-        setError(null);
+        setSignupForm({ username: '', email: '', password: '', confirmPassword: '' });
       } else {
         setError(data.error || 'Registration failed. Please check your inputs.');
       }
     } catch (error) {
       setError('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,7 +87,6 @@ function Signup() {
 
       {isSignupVisible && (
         <>
-          {/* Background overlay */}
           <div
             onClick={() => setIsSignupVisible(false)}
             style={{
@@ -95,7 +100,6 @@ function Signup() {
             }}
           ></div>
 
-          {/* Signup Modal */}
           <div
             ref={signupModalRef}
             style={{
@@ -115,7 +119,11 @@ function Signup() {
             <h2 className="text-center mb-4" style={{ color: '#4CAF50' }}>Sign Up</h2>
 
             <form onSubmit={handleSignupSubmit}>
-              {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {error}
+                </div>
+              )}
 
               <div className="mb-3">
                 <label className="form-label" style={{ fontWeight: 'bold' }}>Username</label>
@@ -127,7 +135,7 @@ function Signup() {
                   onChange={handleSignupChange}
                   className="form-control"
                   required
-                  autoFocus
+                  disabled={isLoading}
                 />
               </div>
 
@@ -141,6 +149,7 @@ function Signup() {
                   onChange={handleSignupChange}
                   className="form-control"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -154,8 +163,9 @@ function Signup() {
                   onChange={handleSignupChange}
                   className="form-control"
                   required
+                  disabled={isLoading}
                 />
-                <small style={{ color: 'gray' }}>Must be at least 6 characters & include a special character</small>
+                <small style={{ color: 'gray' }}>Must be at least 8 characters</small>
               </div>
 
               <div className="mb-3">
@@ -168,6 +178,7 @@ function Signup() {
                   onChange={handleSignupChange}
                   className="form-control"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -175,8 +186,9 @@ function Signup() {
                 type="submit"
                 className="btn btn-primary w-100"
                 style={{ backgroundColor: '#4CAF50', color: 'white', borderRadius: '8px', padding: '12px' }}
+                disabled={isLoading}
               >
-                Sign Up
+                {isLoading ? 'Registering...' : 'Sign Up'}
               </button>
             </form>
           </div>
@@ -186,4 +198,4 @@ function Signup() {
   );
 }
 
-export default Signup; 
+export default Signup;

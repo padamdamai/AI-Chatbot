@@ -1,31 +1,42 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const LoginModal = ({ isLoginVisible, setIsLoginVisible }) => {
+const LoginModal = ({ isLoginVisible, setIsLoginVisible, onSuccessfulLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  if (!isLoginVisible) return null; // Don't render the modal if not visible
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      setErrorMessage('Both fields are required');
+      return;
+    }
 
+    setIsLoading(true);
     try {
       const response = await axios.post('http://localhost:8000/api/login/', {
         username,
         password,
       });
 
-      if (response.status === 200) {
-        localStorage.setItem('token', response.data.token); // Store token in localStorage
-        alert('Login successful!');
-        setIsLoginVisible(false);
+      if (response.data.token) {
+        onSuccessfulLogin(response.data.token);
+        setErrorMessage('');
       }
     } catch (error) {
-      setErrorMessage('Invalid username or password');
+      if (error.response) {
+        setErrorMessage(error.response.data.error || 'Login failed');
+      } else {
+        setErrorMessage('Network error. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (!isLoginVisible) return null;
 
   return (
     <div>
@@ -59,7 +70,11 @@ const LoginModal = ({ isLoginVisible, setIsLoginVisible }) => {
       >
         <h2 className="text-center mb-4" style={{ color: '#4CAF50' }}>Login</h2>
 
-        {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
+        {errorMessage && (
+          <div className="alert alert-danger" role="alert">
+            {errorMessage}
+          </div>
+        )}
 
         <form onSubmit={handleLogin}>
           <div className="mb-3">
@@ -72,6 +87,7 @@ const LoginModal = ({ isLoginVisible, setIsLoginVisible }) => {
               required 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
             />
           </div>
           <div className="mb-3">
@@ -84,6 +100,7 @@ const LoginModal = ({ isLoginVisible, setIsLoginVisible }) => {
               required 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
             />
           </div>
 
@@ -96,8 +113,9 @@ const LoginModal = ({ isLoginVisible, setIsLoginVisible }) => {
               borderRadius: '8px',
               padding: '12px',
             }}
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>
