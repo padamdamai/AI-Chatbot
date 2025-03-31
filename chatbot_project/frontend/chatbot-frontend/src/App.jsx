@@ -87,88 +87,94 @@ function App() {
   };
 
   return (
-    <div className="App d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <div className="ai-chatbot-text fw-bold" style={{ position: 'fixed', top: '20px', left: '20px', fontSize: '1.5rem', color: '#007bff' }}>
-        AI Chatbot
-      </div>
-
-      <div className="chat-container" style={{ width: '90%', maxWidth: '1000px', height: '80%', padding: '30px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-        {isFirstMessage && <h1 className="text-center fw-bold mb-4 fs-2">How can I assist you?</h1>}
-
-        <div className="chatbox mx-auto w-75" style={{ flexGrow: 1, marginBottom: '20px', overflowY: 'scroll', scrollbarWidth: 'none' }}>
-          {chatHistory.map((entry, index) => (
-            <div key={index} className={`d-flex ${entry.role === 'user' ? 'justify-content-end' : 'justify-content-start'}`} style={{ marginBottom: '10px' }}>
-              <div className={`p-3 ${entry.role === 'user' ? 'bg-light w-50 text-dark rounded-5' : ''}`} style={{ backgroundColor: entry.role === 'user' ? '#e0e0e0' : 'transparent', fontSize: '1rem', marginLeft: entry.role === 'user' ? 'auto' : '' }}>
-                {entry.message}
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
+    <div className="App container-fluid d-flex flex-column min-vh-100 p-0">
+      {/* Header Section */}
+      <header className="d-flex justify-content-between align-items-center p-3 bg-white shadow-sm position-sticky top-0 z-3">
+        <div className="ai-chatbot-text fw-bold fs-4 text-primary">AI Chatbot</div>
+        
+        <div className="d-flex gap-2">
+          {isAuthenticated ? (
+            <button 
+              className="btn btn-danger btn-sm py-1 px-3" 
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <button 
+                className="btn btn-primary btn-sm py-1 px-3" 
+                onClick={() => setIsLoginVisible(true)}
+              >
+                Login
+              </button>
+              <Signup />
+            </>
+          )}
         </div>
+      </header>
 
-        <div className="d-flex justify-content-center align-items-center" style={{ position: 'sticky', bottom: 0 }}>
+{/* Main Chat Area */}
+<main className="flex-grow-1 d-flex flex-column justify-content-center align-items-center p-3">
+  <div className="chat-container w-100 h-100 d-flex flex-column" style={{ maxWidth: '1000px' }}>
+    {isFirstMessage && (
+      <h1 className="text-center fw-bold mb-4 fs-2 fs-md-1">How can I assist you?</h1>
+    )}
+
+    {/* Chatbox with custom width for larger screens */}
+    <div className="chatbox flex-grow-1 overflow-auto mb-3 w-100 custom-width-75 mx-auto">
+      {chatHistory.map((entry, index) => (
+        <div 
+          key={index} 
+          className={`d-flex ${entry.role === 'user' ? 'justify-content-end' : 'justify-content-start'} mb-2`}
+        >
+          <div 
+            className={`p-3 rounded-4 ${entry.role === 'user' ? 'bg-light user-message' : 'bot-message'}`}
+            style={{
+              maxWidth: '85%',
+              wordWrap: 'break-word'
+            }}
+          >
+            {entry.message}
+          </div>
+        </div>
+      ))}
+      <div ref={messagesEndRef} />
+    </div>
+    
+    {/* Input Area with matching custom width */}
+    <div className="input-area position-sticky bottom-0 bg-white p-2 w-100">
+      <div className="d-flex justify-content-center">
+        <div className="w-100 custom-width-75">
           <textarea 
-            className="form-control me-2 rounded-5 w-75" 
+            className="form-control rounded-4 p-3 w-100"
             value={userMessage} 
             onChange={(e) => setUserMessage(e.target.value)} 
             onKeyDown={handleKeyPress} 
             placeholder={isAuthenticated ? "Ask something..." : "Please login to chat"} 
             disabled={loading || !isAuthenticated}
             style={{ 
-              fontSize: '1.1rem', 
               height: '6.5rem',
-              paddingTop: '20px',
-              borderRadius: '0',
               boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 20px 0px',
-              maxWidth: '100%',
-              wordWrap: 'break-word',
-              whiteSpace: 'normal',
-              resize: 'none',
-              overflow: 'hidden',
-              textAlign: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              resize: 'none'
             }} 
           />
         </div>
       </div>
+    </div>
+  </div>
+</main>
 
-      <div style={{ position: 'fixed', top: '20px', right: '20px', display: 'flex', flexDirection: 'row', gap: '10px' }}>
-        {isAuthenticated ? (
-          <button 
-            className="btn btn-danger" 
-            onClick={handleLogout}
-            style={{
-              borderRadius: '8px',
-              padding: '3px 20px',
-              fontSize: '16px',
-              cursor: 'pointer',
-            }}
-          >
-            Logout
-          </button>
-        ) : (
-          <>
-            <button 
-              className="btn btn-primary" 
-              onClick={() => setIsLoginVisible(true)} 
-              style={{
-                backgroundColor: '#007bff',
-                color: 'white',
-                borderRadius: '8px',
-                padding: '3px 20px',
-                fontSize: '16px',
-                cursor: 'pointer',
-              }}
-            >
-              Login
-            </button>
-            <Signup />
-          </>
-        )}
-      </div>
+{/* Custom CSS for specific screen size */}
+<style jsx>{`
+  @media (min-width: 618px) and (min-height: 621px) {
+    .custom-width-75 {
+      width: 75% !important;
+    }
+  }
+`}</style>
 
+      {/* Login Modal */}
       {isLoginVisible && (
         <LoginModal 
           isLoginVisible={isLoginVisible} 

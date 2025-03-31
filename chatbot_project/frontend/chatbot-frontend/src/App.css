@@ -16,3 +16,6 @@
   overflow-y: auto;
   max-height: 80vh;  /* Limit the height to prevent overflow */
 }
+.btn-danger {
+  --bs-btn-bg: #cd4e5a;
+}
