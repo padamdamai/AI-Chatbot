@@ -112,7 +112,23 @@ class ChatbotAPI(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Detect request type
+        list_keywords = ["list", "points", "bullets", "steps", "numbered"]
+        math_keywords = ["solve", "calculate", "equation", "math", "+", "-", "*", "/", "^", "="]
+        
+        is_list_request = any(keyword in user_message.lower() for keyword in list_keywords)
+        is_math_request = any(
+            keyword in user_message.lower() for keyword in math_keywords
+        ) or re.search(r'\d+[\+\-\*\/\^=]\d+', user_message)  # Matches simple math expressions
+
         try:
+            # Enhance prompt based on request type
+            enhanced_prompt = user_message
+            if is_list_request:
+                enhanced_prompt = f"{user_message}\n\nProvide the response as a clear numbered list with each point on a new line."
+            elif is_math_request:
+                enhanced_prompt = f"Explain how to solve this problem step by step with proper mathematical reasoning: {user_message}\n\nPresent the solution with each step clearly numbered and explained."
+
             response = requests.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers={
@@ -122,13 +138,18 @@ class ChatbotAPI(APIView):
                 },
                 json={
                     "model": "openai/gpt-3.5-turbo",
-                    "messages": [{"role": "user", "content": user_message}]
+                    "messages": [{"role": "user", "content": enhanced_prompt}]
                 }
             )
             response.raise_for_status()
             response_data = response.json()
             bot_reply = response_data['choices'][0]['message']['content']
-            return Response({'response': bot_reply})
+
+            return Response({
+                'response': bot_reply,
+                'format': 'math' if is_math_request else ('list' if is_list_request else 'text')
+            })
+
         except requests.exceptions.RequestException as e:
             return Response(
                 {'error': f'Chatbot service error: {str(e)}'},
