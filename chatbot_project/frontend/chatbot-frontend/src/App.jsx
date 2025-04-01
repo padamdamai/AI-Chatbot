@@ -11,17 +11,46 @@ function App() {
   const [isFirstMessage, setIsFirstMessage] = useState(true);
   const [isLoginVisible, setIsLoginVisible] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    const verifyToken = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+  
+      try {
+        const response = await axios.get('http://localhost:8000/api/user/', {
+          headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+          },
+          timeout: 5000
+        });
+        
+        setIsAuthenticated(true);
+        setCurrentUser(response.data);
+      } catch (error) {
+        // If token verification fails, clear it
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+        setCurrentUser(null);
+        
+        if (error.response?.status === 401) {
+          // Optional: show a message that session expired
+          setChatHistory(prev => [...prev, { 
+            role: 'bot', 
+            message: 'Your session has expired. Please login again.',
+            format: 'text'
+          }]);
+        }
+      }
+    };
+  
+    verifyToken();
   }, []);
 
-  // Enhanced formatMessage function
   const formatMessage = (message, format) => {
     if (format === 'list') {
       const points = message.split('\n').filter(point => point.trim());
@@ -100,10 +129,8 @@ function App() {
       };
       setChatHistory(prev => [...prev, botMessage]);
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
-        setIsLoginVisible(true);
+      if (error.response?.status === 401) {
+        handleLogout();
         setChatHistory(prev => [...prev, { 
           role: 'bot', 
           message: 'Session expired. Please login again.',
@@ -133,30 +160,42 @@ function App() {
     }
   }, [chatHistory]);
 
-  const handleSuccessfulLogin = (token) => {
+  const handleSuccessfulLogin = (token, userData) => {
     localStorage.setItem('token', token);
     setIsAuthenticated(true);
+    setCurrentUser({
+      username: userData.username,
+      email: userData.email
+    });
     setIsLoginVisible(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    setCurrentUser(null);
   };
 
   return (
     <div className="App container-fluid d-flex flex-column min-vh-100 p-0">
-      {/* Header Section */}
       <header className="d-flex justify-content-between align-items-center p-3 bg-white shadow-sm position-sticky top-0 z-3">
         <div className="ai-chatbot-text fw-bold fs-4 text-primary">AI Chatbot</div>
-        <div className="d-flex gap-2">
+        <div className="d-flex align-items-center gap-2">
           {isAuthenticated ? (
-            <button 
-              className="btn btn-success btn-sm py-1 px-3" 
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            <div className="d-flex flex-column flex-sm-row align-items-center">
+              <span className="me-3 text-muted d-flex align-items-center">
+                <span className="d-none d-sm-inline">Welcome,&nbsp;</span>
+                <span className="fw-bold text-dark text-truncate" style={{ maxWidth: '120px' }}>
+                  {currentUser?.username}
+                </span>
+              </span>
+              <button 
+                className="btn btn-outline-danger btn-sm py-1 px-3" 
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <>
               <button 
@@ -171,14 +210,13 @@ function App() {
         </div>
       </header>
 
-      {/* Main Chat Area */}
       <main className="flex-grow-1 d-flex flex-column justify-content-center align-items-center p-3">
         <div className="chat-container w-100 h-100 d-flex flex-column" style={{ maxWidth: '1000px' }}>
           {isFirstMessage && (
             <h1 className="text-center fw-bold mb-4 fs-2 fs-md-1">How can I assist you?</h1>
           )}
 
-          <div className="chatbox flex-grow-1 overflow-auto mb-3 w-100 custom-width-75 mx-auto">
+          <div className="chatbox flex-grow-1 overflow-auto mb-3 w-75 custom-width-75 mx-auto">
             {chatHistory.map((entry, index) => (
               <div 
                 key={index} 
@@ -198,47 +236,68 @@ function App() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
           <div className="input-area position-sticky bottom-0 bg-white p-2 w-100">
-            <div className="d-flex justify-content-center">
-              <div className="w-100 custom-width-75">
-                <textarea 
-                  className="form-control rounded-4 p-3 w-100"
-                  value={userMessage} 
-                  onChange={(e) => setUserMessage(e.target.value)} 
-                  onKeyDown={handleKeyPress} 
-                  placeholder={isAuthenticated ? "Ask something..." : "Please login to chat"} 
-                  disabled={loading || !isAuthenticated}
-                  style={{ 
-                    height: '6.5rem',
-                    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 20px 0px',
-                    resize: 'none'
-                  }} 
-                />
-              </div>
-            </div>
-          </div>
+  <div className="d-flex justify-content-center">
+    <div className="w-75">
+      <textarea 
+        className="form-control rounded-4 p-3 w-100"
+        value={userMessage} 
+        onChange={(e) => setUserMessage(e.target.value)} 
+        onKeyDown={handleKeyPress} 
+        placeholder={isAuthenticated ? "Ask something..." : "Please login to chat"} 
+        disabled={loading || !isAuthenticated}
+        style={{ 
+          height: '6.5rem',
+          boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 20px 0px',
+          resize: 'none'
+        }} 
+      />
+    </div>
+  </div>
+</div>
+
         </div>
       </main>
 
-      {/* Custom CSS */}
       <style jsx>{`
-        @media (min-width: 618px) and (min-height: 621px) {
-          .custom-width-75 {
-            width: 75% !important;
-          }
-        }
-        .math-solution {
-          font-family: 'Courier New', monospace;
-          line-height: 1.8;
-          white-space: pre-wrap;
-        }
-        .math-line {
-          margin-left: 1.5rem;
-        }
-      `}</style>
+  /* For screens less than 387px width and 626px height */
+  @media (max-width: 386px) and (max-height: 625px) {
+    header {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+      padding-top: 10px; /* Space from top */
+    }
+    
+    .ai-chatbot-text {
+      width: 100%;
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    
+    .right-section {
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .right-section span,
+    .right-section button {
+      margin-top: 5px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .right-section button {
+      max-width: 150px; /* Optional: Keep button width manageable */
+    }
+  }
+`}</style>
 
-      {/* Login Modal */}
+
       {isLoginVisible && (
         <LoginModal 
           isLoginVisible={isLoginVisible} 

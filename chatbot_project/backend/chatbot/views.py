@@ -9,6 +9,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
+import re
 
 load_dotenv()
 
@@ -62,10 +63,12 @@ class RegisterView(APIView):
                 is_active=True
             )
             Token.objects.create(user=user)
-            return Response(
-                {'message': 'User registered successfully'},
-                status=status.HTTP_201_CREATED
-            )
+            return Response({
+                'message': 'User registered successfully',
+                'username': user.username,
+                'email': user.email,
+                'token': Token.objects.get(user=user).key
+            }, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response(
                 {'error': str(e)},
@@ -85,21 +88,28 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        user = authenticate(username=username, password=password)
-        
-        if not user:
-            return Response(
-                {'error': 'Invalid credentials or inactive account'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+        try:
+            user = authenticate(username=username, password=password)
+            
+            if not user:
+                return Response(
+                    {'error': 'Invalid credentials'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
 
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'username': user.username,
-            'email': user.email
-        })
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key,
+                'user_id': user.pk,
+                'username': user.username,
+                'email': user.email
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {'error': 'Authentication service unavailable'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
 
 class ChatbotAPI(APIView):
     permission_classes = [IsAuthenticated]
@@ -119,7 +129,7 @@ class ChatbotAPI(APIView):
         is_list_request = any(keyword in user_message.lower() for keyword in list_keywords)
         is_math_request = any(
             keyword in user_message.lower() for keyword in math_keywords
-        ) or re.search(r'\d+[\+\-\*\/\^=]\d+', user_message)  # Matches simple math expressions
+        ) or re.search(r'\d+[\+\-\*\/\^=]\d+', user_message)
 
         try:
             # Enhance prompt based on request type
@@ -160,3 +170,13 @@ class ChatbotAPI(APIView):
                 {'error': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            'username': user.username,
+            'email': user.email
+        })
