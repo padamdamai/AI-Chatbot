@@ -216,44 +216,46 @@ function App() {
             <h1 className="text-center fw-bold mb-4 fs-2 fs-md-1">How can I assist you?</h1>
           )}
 
-          <div className="chatbox flex-grow-1 overflow-auto mb-3 w-75 custom-width-75 mx-auto">
-            {chatHistory.map((entry, index) => (
-              <div 
-                key={index} 
-                className={`d-flex ${entry.role === 'user' ? 'justify-content-end' : 'justify-content-start'} mb-2`}
-              >
-                <div 
-                  className={`p-3 rounded-4 ${entry.role === 'user' ? 'bg-light user-message' : 'bot-message'}`}
-                  style={{
-                    maxWidth: '85%',
-                    wordWrap: 'break-word'
-                  }}
-                >
-                  {formatMessage(entry.message, entry.format)}
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
+<div className="chatbox flex-grow-1 overflow-auto mb-3 custom-width-75 mx-auto">
+  {chatHistory.map((entry, index) => (
+    <div 
+      key={index} 
+      className={`d-flex ${entry.role === 'user' ? 'justify-content-end' : 'justify-content-start'} mb-2`}
+    >
+      <div 
+        className={`p-3 rounded-4 ${entry.role === 'user' ? 'bg-light user-message' : 'bot-message'}`}
+        style={{
+          maxWidth: '100%',
+          wordWrap: 'break-word'
+        }}
+      >
+        {formatMessage(entry.message, entry.format)}
+      </div>
+    </div>
+  ))}
+  <div ref={messagesEndRef} />
+</div>
+
 
           <div className="input-area position-sticky bottom-0 bg-white p-2 w-100">
-  <div className="d-flex justify-content-center">
-    <div className="w-75">
-      <textarea 
-        className="form-control rounded-4 p-3 w-100"
-        value={userMessage} 
-        onChange={(e) => setUserMessage(e.target.value)} 
-        onKeyDown={handleKeyPress} 
-        placeholder={isAuthenticated ? "Ask something..." : "Please login to chat"} 
-        disabled={loading || !isAuthenticated}
-        style={{ 
-          height: '6.5rem',
-          boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 20px 0px',
-          resize: 'none'
-        }} 
-      />
-    </div>
+          <div className="d-flex justify-content-center custom-width">
+  <div className="textarea-container">
+    <textarea
+      className="form-control rounded-4 p-3"
+      value={userMessage}
+      onChange={(e) => setUserMessage(e.target.value)}
+      onKeyDown={handleKeyPress}
+      placeholder={isAuthenticated ? "Ask something..." : "Please login to chat"}
+      disabled={loading || !isAuthenticated}
+      style={{
+        height: '6.5rem',
+        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 20px 0px',
+        resize: 'none',
+      }}
+    />
   </div>
+</div>
+
 </div>
 
         </div>
@@ -270,7 +272,6 @@ function App() {
       text-align: center;
       padding-top: 10px; /* Space from top */
     }
-    
     .ai-chatbot-text {
       width: 100%;
       text-align: center;

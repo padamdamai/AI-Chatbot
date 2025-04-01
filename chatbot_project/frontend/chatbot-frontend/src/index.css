@@ -1,0 +1,58 @@
+.custom-width {
+    width: 100%;
+    margin: 0 auto; /* Centers the container */
+  }
+  
+  .textarea-container {
+    width: 100%;
+  }
+  
+  @media (min-width: 768px) {
+    .custom-width {
+      width: 75%; /* Sets the width to 75% on medium screens and above */
+    }
+  }
+  .custom-width-75 {
+    width: 100%;
+    margin: 0 auto; /* Centers the container */
+  }
+  
+  @media (min-width: 768px) {
+    .custom-width-75 {
+      width: 75%; /* Sets the width to 75% on medium screens and above */
+    }
+  }
+    
+  .custom-width-75 {
+    width: 100%;
+    margin: 0 auto; /* Centers the container */
+  }
+  
+  @media (min-width: 768px) {
+    .custom-width-75 {
+      width: 75%; /* Sets the width to 75% on medium screens and above */
+    }
+  }
+  
+  @media (max-width: 607px) {
+    .custom-width-75 {
+      width: 100%; /* Sets the width to 90% for screens smaller than 607px */
+    }
+  }
+  
+
+
+
+  .textarea-container textarea {
+    height: 6.5rem; /* Default height for larger screens */
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 20px 0px;
+    resize: none;
+    overflow-y: hidden;
+  }
+  
+  @media (max-width: 633px) {
+    .textarea-container textarea {
+      height: 4rem !important; /* Reduces height to 1rem for screens smaller than or equal to 633px */
+    }
+  }
+  
