@@ -1,4 +1,4 @@
-![hello,manoj](https://github.com/user-attachments/assets/a6df836b-d4d4-42d2-b8ef-d73a797ea45c)# AIChatHub
+# AIChatHub
 
 **AIChatHub** is an AI-powered chatbot with authentication, built using React for the frontend and Django for the backend, powered by OpenAI's GPT-4 API through OpenRouter.
 
@@ -74,3 +74,45 @@ python manage.py migrate
 
 # Start development server
 python manage.py runserver
+```
+### frontend Setup
+cd ../frontend 
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+### Project structure
+
+AIChatHub/
+├── backend/                   # Django backend
+│   ├── chatbot/               # Main app
+│   │   ├── migrations/        # Database migrations
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py          # API views
+│   ├── chatbot_project/       # Project settings
+│   │   ├── __init__.py
+│   │   ├── asgi.py
+│   │   ├── settings.py       # Django settings
+│   │   ├── urls.py          # Main URLs
+│   │   └── wsgi.py
+│   ├── db.sqlite3            # Database (dev)
+│   └── requirements.txt      # Python dependencies
+└── frontend/                 # React frontend
+    ├── public/
+    ├── src/
+    │   ├── components/       # Auth/Chat components
+    │   │   ├── LoginModal.js
+    │   │   └── Signup.js
+    │   ├── App.js           # Main component
+    │   └── index.js
+    ├── package.json
+    └── README.md
