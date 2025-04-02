@@ -85,34 +85,5 @@ npm install
 npm start
 
 ### Project structure
+![codestructure (1)](https://github.com/user-attachments/assets/d13080aa-2306-40e7-b7a7-8a5cda2680f4)
 
-AIChatHub/
-├── backend/                   # Django backend
-│   ├── chatbot/               # Main app
-│   │   ├── migrations/        # Database migrations
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   └── views.py          # API views
-│   ├── chatbot_project/       # Project settings
-│   │   ├── __init__.py
-│   │   ├── asgi.py
-│   │   ├── settings.py       # Django settings
-│   │   ├── urls.py          # Main URLs
-│   │   └── wsgi.py
-│   ├── db.sqlite3            # Database (dev)
-│   └── requirements.txt      # Python dependencies
-└── frontend/                 # React frontend
-    ├── public/
-    ├── src/
-    │   ├── components/       # Auth/Chat components
-    │   │   ├── LoginModal.js
-    │   │   └── Signup.js
-    │   ├── App.js           # Main component
-    │   └── index.js
-    ├── package.json
-    └── README.md
