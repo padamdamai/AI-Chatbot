@@ -1,36 +1,62 @@
 # AIChatHub
 
-**AIChatHub** is an AI-powered chatbot built using React for the frontend and Django for the backend, powered by OpenAI's GPT-4 API. It allows users to engage in natural conversations and receive intelligent responses from the bot.
+**AIChatHub** is an AI-powered chatbot with authentication, built using React for the frontend and Django for the backend, powered by OpenAI's GPT-4 API through OpenRouter.
+![homepage](https://github.com/user-attachments/assets/81f8046d-85a4-46a4-8b01-54e0facff2a9)
 
-## Features
 
-- **GPT-4 Powered**: Uses OpenAI's GPT-4 API for generating dynamic and meaningful responses.
-- **Real-time Chat**: Allows seamless real-time communication between the user and the chatbot.
-- **React Frontend**: User-friendly interface for smooth interaction.
-- **Django Backend**: Robust backend with API endpoints to handle communication with the AI model.
-- **CORS Support**: Enables the React frontend to communicate with the Django backend.
 
-## Tech Stack
+## ✨ Features
 
-- **Frontend**: React.js
-- **Backend**: Django (with Django REST Framework)
-- **AI Model**: OpenAI's GPT-4
-- **API**: OpenAI API
-- **Other Tools**: Axios for making API requests from React to Django
+- **GPT-4 Powered** via OpenRouter API
+- **User Authentication** (Signup/Login with JWT tokens)
+- **Real-time Chat Interface**
+- **Smart Response Formatting**:
+  - Code snippets with proper HTML formatting
+  - Numbered lists
+  - Math solutions with step-by-step explanations
+- **Responsive Design** works on all devices
 
-## Getting Started
+## 🛠️ Tech Stack
+
+**Frontend**  
+▸ React 18  
+▸ Bootstrap 5  
+▸ Axios  
+
+**Backend**  
+▸ Django 5  
+▸ Django REST Framework  
+▸ SQLite (dev) / PostgreSQL (prod-ready)  
+
+**AI Integration**  
+▸ OpenRouter API (GPT-4)  
+
+## 🚀 Quick Start
 
 ### Prerequisites
+- Python 3.8+
+- Node.js 16+
+- OpenRouter API key ([Get one here](https://openrouter.ai/))
 
-Make sure you have the following installed:
+### Backend Setup
+```bash
+# Clone repository
+git clone git@github.com:padamdamai/AIChatHub.git
+cd AIChatHub/backend
 
-- Python 3.x
-- Node.js and npm (for React)
-- Virtualenv (optional but recommended)
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-### Backend Setup (Django)
+# Install dependencies
+pip install -r requirements.txt
 
-1. Clone the repository:
-   ```bash
-   git clone git@github.com:padamdamai/AIChatHub.git
-   cd AIChatHub/backend
+# Set up environment variables
+echo "DJANGO_SECRET_KEY=your-secret-key-here" > .env
+echo "OPENROUTER_API_KEY=your-openrouter-key" >> .env
+
+# Run migrations
+python manage.py migrate
+
+# Start development server
+python manage.py runserver
