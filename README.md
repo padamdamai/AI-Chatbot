@@ -1,89 +1,241 @@
-# AIChatHub
+# PadamNova
 
-**AIChatHub** is an AI-powered chatbot with authentication, built using React for the frontend and Django for the backend, powered by OpenAI's GPT-4 API through OpenRouter.
+PadamNova is a modern AI-powered chatbot platform built using React, Vite, Django REST Framework, and OpenRouter API.
+It supports authentication, Markdown rendering, LaTeX mathematical formatting, smart AI responses, and responsive UI design.
 
-![homepage](https://github.com/user-attachments/assets/81f8046d-85a4-46a4-8b01-54e0facff2a9)
+---
 
-![signuppage](https://github.com/user-attachments/assets/28392c4e-aa37-4082-8e06-f5c2057700ec)
+# 🚀 Features
 
-![loginpage](https://github.com/user-attachments/assets/8660e5a6-e40b-4bd7-8d13-d50d5791811b)
+* 🤖 AI-powered chatbot using OpenRouter API
+* 🔐 User authentication system (Signup/Login)
+* 🧠 Smart response formatting
+* 📝 Markdown rendering support
+* 📐 LaTeX math equation rendering
+* 📋 Numbered lists & formatted responses
+* 💻 Code block rendering
+* 📱 Fully responsive design
+* ⚡ Fast frontend powered by Vite
+* 🔄 Token-based authentication with Django REST Framework
 
-[loginwelcome](https://github.com/user-attachments/assets/0bbc12dd-d4b3-499e-a8af-f0ede315eb72)
+---
 
-![welcomemajoj0](https://github.com/user-attachments/assets/15dde45e-3d12-4599-8071-85d29ae525fd)
+# 🛠️ Tech Stack
 
-![welcomemajog1](https://github.com/user-attachments/assets/041c4278-db97-44b8-8493-26aa520dd240)
+## Frontend
 
-![hello,manoj](https://github.com/user-attachments/assets/f5e7e7e3-4645-4e63-bbd6-2b776468e0e0)
+* React
+* Vite
+* Bootstrap 5
+* Axios
+* React Markdown
+* KaTeX
+
+## Backend
+
+* Django
+* Django REST Framework
+* SQLite
+* Python
+
+## AI Integration
+
+* OpenRouter API
+* Gemma / Llama / DeepSeek models
+
+---
+
+# 📸 Screenshots
+
+## Homepage
+
+--- <img width="1919" height="932" alt="homepage" src="https://github.com/user-attachments/assets/9966facc-00f2-4b03-9180-465327640495" />
 
 
+## Signup Page
+
+---<img width="1919" height="932" alt="signup" src="https://github.com/user-attachments/assets/46c5fc60-8676-4672-b8ee-80688baec5f1" />
 
 
-## ✨ Features
+## Login Page
 
-- **GPT-4 Powered** via OpenRouter API
-- **User Authentication** (Signup/Login with JWT tokens)
-- **Real-time Chat Interface**
-- **Smart Response Formatting**:
-  - Code snippets with proper HTML formatting
-  - Numbered lists
-  - Math solutions with step-by-step explanations
-- **Responsive Design** works on all devices
+--- <img width="1919" height="932" alt="login" src="https://github.com/user-attachments/assets/3e124007-43ba-4577-9f3c-b35da1fcb0cc" />
 
-## 🛠️ Tech Stack
 
-**Frontend**  
-▸ React 18  
-▸ Bootstrap 5  
-▸ Axios  
+## Welcome Screen
 
-**Backend**  
-▸ Django 5  
-▸ Django REST Framework  
-▸ SQLite (dev) / PostgreSQL (prod-ready)  
+--- <img width="1919" height="932" alt="welcomepg" src="https://github.com/user-attachments/assets/3b089e67-6a58-4b82-a12d-700e16253937" />
 
-**AI Integration**  
-▸ OpenRouter API (GPT-4)  
 
-## 🚀 Quick Start
+## Chat Interface
 
-### Prerequisites
-- Python 3.8+
-- Node.js 16+
-- OpenRouter API key ([Get one here](https://openrouter.ai/))
+--- <img width="1919" height="932" alt="chat" src="https://github.com/user-attachments/assets/052f35bc-e703-431e-98da-00c6c0ab2fb3" />
 
-### Backend Setup
+
+# 📂 Project Structure
+
 ```bash
-# Clone repository
-git clone git@github.com:padamdamai/AIChatHub.git
-cd AIChatHub/backend
+chatbot_project/
+│
+├── backend/
+│   ├── chatbot_project/
+│   ├── api/
+│   ├── manage.py
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+│
+└── README.md
+```
 
-# Create and activate virtual environment
+---
+
+# ⚙️ Backend Setup
+
+## Clone Repository
+
+```bash
+git clone git@github.com:padamdamai/padamnova.git
+```
+
+```bash
+cd padamnova/backend
+```
+
+---
+
+## Create Virtual Environment
+
+### Linux / Mac
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### Windows
+
+```bash
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+venv\Scripts\activate
+```
 
-# Install dependencies
+---
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# Set up environment variables
-echo "DJANGO_SECRET_KEY=your-secret-key-here" > .env
-echo "OPENROUTER_API_KEY=your-openrouter-key" >> .env
+---
 
-# Run migrations
+## Create .env File
+
+```env
+DJANGO_SECRET_KEY=your_secret_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+```
+
+---
+
+## Run Migrations
+
+```bash
 python manage.py migrate
+```
 
-# Start development server
+---
+
+## Start Backend Server
+
+```bash
 python manage.py runserver
 ```
-### frontend Setup
-cd ../frontend 
 
-# Install dependencies
+---
+
+# 💻 Frontend Setup
+
+```bash
+cd ../frontend
+```
+
+---
+
+## Install Dependencies
+
+```bash
 npm install
+```
 
-# Start development server
-npm start
+---
 
-### Project structure
-![codestructure (1)](https://github.com/user-attachments/assets/d13080aa-2306-40e7-b7a7-8a5cda2680f4)
+## Start Frontend
 
+```bash
+npm run dev
+```
+
+---
+
+# 📐 Markdown & Math Rendering
+
+PadamNova supports:
+
+* Markdown formatting
+* Syntax-highlighted code blocks
+* Mathematical equations using LaTeX
+* Numbered steps and lists
+
+Example:
+
+```
+def say_hello():
+    """Function to print a greeting message."""
+    print("Hello, World!")
+
+# Calling the function
+say_hello()
+```
+
+---
+
+# 🔑 Environment Variables
+
+## Backend `.env`
+
+```env
+DJANGO_SECRET_KEY=your_secret_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+```
+
+---
+
+# 🌟 Future Improvements
+
+* Chat history storage
+* Multiple AI model selection
+* Voice input support
+* Image generation support
+* Streaming AI responses
+* Dark mode
+* Docker deployment
+
+---
+
+# 👨‍💻 Author
+
+## Padam Damai
+
+* GitHub: https://github.com/padamdamai
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
