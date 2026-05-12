@@ -49,7 +49,8 @@ It supports authentication, Markdown rendering, LaTeX mathematical formatting, s
 
 ## Homepage
 
-<img width="1919" height="932" alt="homepage" src="https://github.com/user-attachments/assets/9966facc-00f2-4b03-9180-465327640495" />
+<img width="1919" height="932" alt="homepg" src="https://github.com/user-attachments/assets/5753a4c4-df5f-4396-986b-5a72df96e530" />
+
 
 
 ## Signup Page
