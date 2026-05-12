@@ -1,13 +1,16 @@
-"""
-Django settings for chatbot_project
-"""
-
-from pathlib import Path
 import os
+from pathlib import Path
+from dotenv import load_dotenv # 1. Import the loader
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-key-for-dev-only')
+# 2. Load the .env file
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# 3. Use the keys
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'default-insecure-key')
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY') 
+
 DEBUG = True
 ALLOWED_HOSTS = ['*']  # For development only
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Signup from './component/signup';
 import LoginModal from './component/login';
+import MarkdownRenderer from './component/MarkdownRenderer';
 
 function App() {
   const [userMessage, setUserMessage] = useState('');
@@ -51,46 +52,9 @@ function App() {
     verifyToken();
   }, []);
 
-  const formatMessage = (message, format) => {
-    if (format === 'list') {
-      const points = message.split('\n').filter(point => point.trim());
-      return (
-        <ol className="ps-3" style={{ listStyleType: 'decimal' }}>
-          {points.map((point, index) => (
-            <li key={index} className="mb-2">
-              {point.replace(/^\d+\.\s*/, '').trim()}
-            </li>
-          ))}
-        </ol>
-      );
-    }
-    
-    if (format === 'math') {
-      return (
-        <div className="math-solution">
-          {message.split('\n').map((line, index) => {
-            if (line.match(/^Step \d+:/i)) {
-              return (
-                <div key={index} className="fw-bold mt-2 text-primary">
-                  {line}
-                </div>
-              );
-            } else if (line.trim() === '') {
-              return <br key={index} />;
-            } else {
-              return (
-                <div key={index} className="math-line">
-                  {line}
-                </div>
-              );
-            }
-          })}
-        </div>
-      );
-    }
-
-    return <div className="whitespace-pre-line">{message}</div>;
-  };
+const formatMessage = (message) => {
+  return <MarkdownRenderer content={message} />;
+};
 
   const sendMessage = async () => {
     if (!userMessage.trim()) return;
@@ -129,21 +93,36 @@ function App() {
       };
       setChatHistory(prev => [...prev, botMessage]);
     } catch (error) {
-      if (error.response?.status === 401) {
-        handleLogout();
-        setChatHistory(prev => [...prev, { 
-          role: 'bot', 
-          message: 'Session expired. Please login again.',
-          format: 'text'
-        }]);
-      } else {
-        setChatHistory(prev => [...prev, { 
-          role: 'bot', 
-          message: 'Sorry, something went wrong.',
-          format: 'text'
-        }]);
+
+  console.log(error);
+
+  if (error.response?.status === 401) {
+
+    handleLogout();
+
+    setChatHistory(prev => [
+      ...prev,
+      {
+        role: 'bot',
+        message: 'Session expired. Please login again.',
+        format: 'text'
       }
-    } finally {
+    ]);
+
+  } else {
+
+    setChatHistory(prev => [
+      ...prev,
+      {
+        role: 'bot',
+        message:
+          error.response?.data?.error ||
+          'All AI models are busy right now. Please try again.',
+        format: 'text'
+      }
+    ]);
+  }
+}finally {
       setLoading(false);
     }
   };
@@ -179,7 +158,7 @@ function App() {
   return (
     <div className="App container-fluid d-flex flex-column min-vh-100 p-0">
       <header className="d-flex justify-content-between align-items-center p-3 bg-white shadow-sm position-sticky top-0 z-3">
-        <div className="ai-chatbot-text fw-bold fs-4 text-primary">AI Chatbot</div>
+        <div className="ai-chatbot-text fw-bold fs-4 text-primary">PadamNova</div>
         <div className="d-flex align-items-center gap-2">
           {isAuthenticated ? (
             <div className="d-flex flex-column flex-sm-row align-items-center">
@@ -229,7 +208,7 @@ function App() {
           wordWrap: 'break-word'
         }}
       >
-        {formatMessage(entry.message, entry.format)}
+        <MarkdownRenderer content={entry.message} />
       </div>
     </div>
   ))}
@@ -237,25 +216,37 @@ function App() {
 </div>
 
 
-          <div className="input-area position-sticky bottom-0 bg-white p-2 w-100">
-          <div className="d-flex justify-content-center custom-width">
-  <div className="textarea-container">
+<div className="input-wrapper">
+  <div className="input-container">
+    
     <textarea
-      className="form-control rounded-4 p-3"
+      className="chat-input"
       value={userMessage}
-      onChange={(e) => setUserMessage(e.target.value)}
-      onKeyDown={handleKeyPress}
-      placeholder={isAuthenticated ? "Ask something..." : "Please login to chat"}
-      disabled={loading || !isAuthenticated}
-      style={{
-        height: '6.5rem',
-        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 20px 0px',
-        resize: 'none',
-      }}
-    />
-  </div>
-</div>
+      onChange={(e) => {
+        setUserMessage(e.target.value);
 
+        e.target.style.height = "auto";
+        e.target.style.height = e.target.scrollHeight + "px";
+      }}
+      onKeyDown={handleKeyPress}
+      placeholder={
+        isAuthenticated
+          ? "Message AI Chatbot..."
+          : "Please login to continue..."
+      }
+      disabled={loading || !isAuthenticated}
+      rows={1}
+    />
+
+    <button
+      className="send-btn"
+      onClick={sendMessage}
+      disabled={loading || !userMessage.trim()}
+    >
+      ↑
+    </button>
+
+  </div>
 </div>
 
         </div>
