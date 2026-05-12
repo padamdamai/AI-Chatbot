@@ -20,7 +20,7 @@ function App() {
     const verifyToken = async () => {
       const token = localStorage.getItem('token');
       if (!token) return;
-  
+
       try {
         const response = await axios.get('http://localhost:8000/api/user/', {
           headers: {
@@ -29,7 +29,7 @@ function App() {
           },
           timeout: 5000
         });
-        
+
         setIsAuthenticated(true);
         setCurrentUser(response.data);
       } catch (error) {
@@ -37,24 +37,24 @@ function App() {
         localStorage.removeItem('token');
         setIsAuthenticated(false);
         setCurrentUser(null);
-        
+
         if (error.response?.status === 401) {
           // Optional: show a message that session expired
-          setChatHistory(prev => [...prev, { 
-            role: 'bot', 
+          setChatHistory(prev => [...prev, {
+            role: 'bot',
             message: 'Your session has expired. Please login again.',
             format: 'text'
           }]);
         }
       }
     };
-  
+
     verifyToken();
   }, []);
 
-const formatMessage = (message) => {
-  return <MarkdownRenderer content={message} />;
-};
+  const formatMessage = (message) => {
+    return <MarkdownRenderer content={message} />;
+  };
 
   const sendMessage = async () => {
     if (!userMessage.trim()) return;
@@ -64,10 +64,10 @@ const formatMessage = (message) => {
     }
 
     setLoading(true);
-    const newUserMessage = { 
-      role: 'user', 
-      message: userMessage, 
-      format: 'text' 
+    const newUserMessage = {
+      role: 'user',
+      message: userMessage,
+      format: 'text'
     };
     setChatHistory(prev => [...prev, newUserMessage]);
     setUserMessage('');
@@ -94,35 +94,35 @@ const formatMessage = (message) => {
       setChatHistory(prev => [...prev, botMessage]);
     } catch (error) {
 
-  console.log(error);
+      console.log(error);
 
-  if (error.response?.status === 401) {
+      if (error.response?.status === 401) {
 
-    handleLogout();
+        handleLogout();
 
-    setChatHistory(prev => [
-      ...prev,
-      {
-        role: 'bot',
-        message: 'Session expired. Please login again.',
-        format: 'text'
+        setChatHistory(prev => [
+          ...prev,
+          {
+            role: 'bot',
+            message: 'Session expired. Please login again.',
+            format: 'text'
+          }
+        ]);
+
+      } else {
+
+        setChatHistory(prev => [
+          ...prev,
+          {
+            role: 'bot',
+            message:
+              error.response?.data?.error ||
+              'All AI models are busy right now. Please try again.',
+            format: 'text'
+          }
+        ]);
       }
-    ]);
-
-  } else {
-
-    setChatHistory(prev => [
-      ...prev,
-      {
-        role: 'bot',
-        message:
-          error.response?.data?.error ||
-          'All AI models are busy right now. Please try again.',
-        format: 'text'
-      }
-    ]);
-  }
-}finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -168,8 +168,8 @@ const formatMessage = (message) => {
                   {currentUser?.username}
                 </span>
               </span>
-              <button 
-                className="btn btn-outline-danger btn-sm py-1 px-3" 
+              <button
+                className="btn btn-outline-danger btn-sm py-1 px-3"
                 onClick={handleLogout}
               >
                 Logout
@@ -177,8 +177,8 @@ const formatMessage = (message) => {
             </div>
           ) : (
             <>
-              <button 
-                className="btn btn-primary btn-sm py-1 px-3" 
+              <button
+                className="btn btn-primary btn-sm py-1 px-3"
                 onClick={() => setIsLoginVisible(true)}
               >
                 Login
@@ -192,62 +192,76 @@ const formatMessage = (message) => {
       <main className="flex-grow-1 d-flex flex-column justify-content-center align-items-center p-3">
         <div className="chat-container w-100 h-100 d-flex flex-column" style={{ maxWidth: '1000px' }}>
           {isFirstMessage && (
-            <h1 className="text-center fw-bold mb-4 fs-2 fs-md-1">How can I assist you?</h1>
+            <h1 className="text-center fw-bold mb-4 fs-2 fs-md-1">
+              <div className="text-center mb-4">
+                <h1 className="fw-bold display-4 text-primary">
+                  PadamNova
+                </h1>
+
+                <p className="fs-5 text-secondary">
+                  Your intelligent AI assistant
+                </p>
+
+                <p className="text-muted">
+                  Ask anything. Generate ideas. Solve problems.
+                </p>
+              </div>
+            </h1>
           )}
 
-<div className="chatbox flex-grow-1 overflow-auto mb-3 custom-width-75 mx-auto">
-  {chatHistory.map((entry, index) => (
-    <div 
-      key={index} 
-      className={`d-flex ${entry.role === 'user' ? 'justify-content-end' : 'justify-content-start'} mb-2`}
-    >
-      <div 
-        className={`p-3 rounded-4 ${entry.role === 'user' ? 'bg-light user-message' : 'bot-message'}`}
-        style={{
-          maxWidth: '100%',
-          wordWrap: 'break-word'
-        }}
-      >
-        <MarkdownRenderer content={entry.message} />
-      </div>
-    </div>
-  ))}
-  <div ref={messagesEndRef} />
-</div>
+          <div className="chatbox flex-grow-1 overflow-auto mb-3 custom-width-75 mx-auto">
+            {chatHistory.map((entry, index) => (
+              <div
+                key={index}
+                className={`d-flex ${entry.role === 'user' ? 'justify-content-end' : 'justify-content-start'} mb-2`}
+              >
+                <div
+                  className={`p-3 rounded-4 ${entry.role === 'user' ? 'bg-light user-message' : 'bot-message'}`}
+                  style={{
+                    maxWidth: '100%',
+                    wordWrap: 'break-word'
+                  }}
+                >
+                  <MarkdownRenderer content={entry.message} />
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
 
 
-<div className="input-wrapper">
-  <div className="input-container">
-    
-    <textarea
-      className="chat-input"
-      value={userMessage}
-      onChange={(e) => {
-        setUserMessage(e.target.value);
+          <div className="input-wrapper">
+            <div className="input-container">
 
-        e.target.style.height = "auto";
-        e.target.style.height = e.target.scrollHeight + "px";
-      }}
-      onKeyDown={handleKeyPress}
-      placeholder={
-        isAuthenticated
-          ? "Message AI Chatbot..."
-          : "Please login to continue..."
-      }
-      disabled={loading || !isAuthenticated}
-      rows={1}
-    />
+              <textarea
+                className="chat-input"
+                value={userMessage}
+                onChange={(e) => {
+                  setUserMessage(e.target.value);
 
-    <button
-      className="send-btn"
-      onClick={sendMessage}
-      disabled={loading || !userMessage.trim()}
-    >
-      ↑
-    </button>
+                  e.target.style.height = "auto";
+                  e.target.style.height = e.target.scrollHeight + "px";
+                }}
+                onKeyDown={handleKeyPress}
+                placeholder={
+                  isAuthenticated
+                    ? "Message AI Chatbot..."
+                    : "Please login to continue..."
+                }
+                disabled={loading || !isAuthenticated}
+                rows={1}
+              />
 
-  </div>
-</div>
+              <button
+                className="send-btn"
+                onClick={sendMessage}
+                disabled={loading || !userMessage.trim()}
+              >
+                ↑
+              </button>
+
+            </div>
+          </div>
 
         </div>
       </main>
@@ -291,8 +305,8 @@ const formatMessage = (message) => {
 
 
       {isLoginVisible && (
-        <LoginModal 
-          isLoginVisible={isLoginVisible} 
+        <LoginModal
+          isLoginVisible={isLoginVisible}
           setIsLoginVisible={setIsLoginVisible}
           onSuccessfulLogin={handleSuccessfulLogin}
         />
