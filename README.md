@@ -49,27 +49,27 @@ It supports authentication, Markdown rendering, LaTeX mathematical formatting, s
 
 ## Homepage
 
---- <img width="1919" height="932" alt="homepage" src="https://github.com/user-attachments/assets/9966facc-00f2-4b03-9180-465327640495" />
+<img width="1919" height="932" alt="homepage" src="https://github.com/user-attachments/assets/9966facc-00f2-4b03-9180-465327640495" />
 
 
 ## Signup Page
 
----<img width="1919" height="932" alt="signup" src="https://github.com/user-attachments/assets/46c5fc60-8676-4672-b8ee-80688baec5f1" />
+<img width="1919" height="932" alt="signup" src="https://github.com/user-attachments/assets/46c5fc60-8676-4672-b8ee-80688baec5f1" />
 
 
 ## Login Page
 
---- <img width="1919" height="932" alt="login" src="https://github.com/user-attachments/assets/3e124007-43ba-4577-9f3c-b35da1fcb0cc" />
+<img width="1919" height="932" alt="login" src="https://github.com/user-attachments/assets/3e124007-43ba-4577-9f3c-b35da1fcb0cc" />
 
 
 ## Welcome Screen
 
---- <img width="1919" height="932" alt="welcomepg" src="https://github.com/user-attachments/assets/3b089e67-6a58-4b82-a12d-700e16253937" />
+<img width="1919" height="932" alt="welcomepg" src="https://github.com/user-attachments/assets/3b089e67-6a58-4b82-a12d-700e16253937" />
 
 
 ## Chat Interface
 
---- <img width="1919" height="932" alt="chat" src="https://github.com/user-attachments/assets/052f35bc-e703-431e-98da-00c6c0ab2fb3" />
+img width="1919" height="932" alt="chat" src="https://github.com/user-attachments/assets/052f35bc-e703-431e-98da-00c6c0ab2fb3" />
 
 
 # 📂 Project Structure
